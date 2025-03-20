@@ -1,4 +1,6 @@
 import flet as ft
+from flet.core.types import MainAxisAlignment, TextAlign
+
 
 class View(object):
     def __init__(self, page: ft.Page):
@@ -18,6 +20,16 @@ class View(object):
     def add_content(self):
         """Function that creates and adds the visual elements to the page. It also updates
         the page accordingly."""
+
+        def buttonClicked1(e):
+            t.value = f"Dropdown changed to {self._selezionaLingua.value}"
+            t.text_align=TextAlign.CENTER
+            self.page.update()
+        def buttonClicked2(e):
+            t.value = f"Dropdown changed to {self._selezionaModalità.value}"
+            t.text_align = TextAlign.LEFT
+            self.page.update()
+
         # title + theme switch
         self.__title = ft.Text("TdP 2024 - Lab 04 - SpellChecker ++", size=24, color="blue")
         self.__theme_switch = ft.Switch(label="Light theme", on_change=self.theme_changed)
@@ -26,9 +38,24 @@ class View(object):
                    alignment=ft.MainAxisAlignment.START)
         )
 
-        # Add your stuff here
+        t= ft.Text()
 
-        self.page.add([])
+        # riga 1
+        self._selezionaLingua= ft.DropdownM2(label="Select language", hint_text="Choose your language", options=[ft.dropdownm2.Option("english"),ft.dropdownm2.Option("italian"),ft.dropdownm2.Option("spanish"),],autofocus=True,width=610,
+                                             on_change=buttonClicked1)
+        row1= ft.Row([self._selezionaLingua])
+
+        #riga 2
+        self._selezionaModalità=ft.DropdownM2(label="Search Modality", hint_text="Choose your modality", options=[ft.dropdownm2.Option("Default"),ft.dropdownm2.Option("Linear"),ft.dropdownm2.Option("Dichotomic"),],autofocus=True,
+                                              on_change=buttonClicked2)
+        self._frase= ft.TextField(label="Add your sentence here")
+        self._bottoneCheck= ft.ElevatedButton(text="Spell check", on_click= self.__controller.handleSpellCheck)
+        row2= ft.Row([self._selezionaModalità,self._frase,self._bottoneCheck])
+
+        #riga 3
+        self._output= ft.ListView(expand=1, spacing=10, padding=10,auto_scroll=True)
+
+        self.page.add(row1,row2,t,self._output)
 
         self.page.update()
 
@@ -51,3 +78,6 @@ class View(object):
         #     ft.colors.GREY_900 if self.page.theme_mode == ft.ThemeMode.DARK else ft.colors.GREY_300
         # )
         self.page.update()
+
+
+
